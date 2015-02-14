@@ -402,7 +402,23 @@ main (int argc, char *argv[])
 
   // Install Mobility Model in eNB
   Ptr<ListPositionAllocator> enbPositionAlloc = CreateObject<ListPositionAllocator> (); // declare enbPositionAlloc pointer.
+  for (uint16_t i = 0; i < numberOfEnbs; i++)
+    {
+      Vector enbPosition (distance * (i + 1), distance, 0); // orgin.
 
+      if (i == 0 || i%2 != 0)
+      {
+        Vector enbPosition (250 + distance*i, 1000, 0);
+        enbPositionAlloc->Add (enbPosition);
+      }
+      else if (i%2 == 0)
+      {
+        Vector enbPosition (distance*i, 0, 0);
+        enbPositionAlloc->Add (enbPosition);
+      }
+      // enbPositionAlloc->Add (enbPosition); // orgin
+    }
+  /*
   for (uint16_t i = 0; i < numberOfEnbs; i++)
   {
     if (i == 0) // enb 0
@@ -421,7 +437,7 @@ main (int argc, char *argv[])
       enbPositionAlloc->Add (enbPosition);
     }
   }
-
+  */
   MobilityHelper enbMobility; // enb mobility helper.
   enbMobility.SetMobilityModel ("ns3::ConstantPositionMobilityModel");
   enbMobility.SetPositionAllocator (enbPositionAlloc);
