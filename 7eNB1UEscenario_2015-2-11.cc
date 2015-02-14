@@ -418,6 +418,7 @@ main (int argc, char *argv[])
       }
       // enbPositionAlloc->Add (enbPosition); // orgin
     }
+	
   /*
   for (uint16_t i = 0; i < numberOfEnbs; i++)
   {
