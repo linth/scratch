@@ -33,6 +33,9 @@
 #include "ns3/ipv4-flow-classifier.h"
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
 
 using namespace ns3;
 
@@ -139,6 +142,15 @@ void SinkRxTrace (Ptr<const Packet> pkt, const Address &addr)
   bytesTotal += pkt->GetSize();
 }
 
+static void CourseChange (std::string foo, Ptr<const MobilityModel> mobility)
+{
+  Vector pos = mobility->GetPosition ();
+  Vector vel = mobility->GetVelocity ();
+  std::cout << Simulator::Now () << ", model=" << mobility << ", POS: x=" << pos.x << ", y=" << pos.y
+            << ", z=" << pos.z << "; VEL:" << vel.x << ", y=" << vel.y
+            << ", z=" << vel.z << std::endl;
+}
+
 /**
  * Sample simulation script for an automatic X2-based handover based on the RSRQ measures.
  * It instantiates two eNodeB, attaches one UE to the 'source' eNB.
@@ -164,21 +176,32 @@ main (int argc, char *argv[])
 //   LogComponentEnable ("A2A4RsrqHandoverAlgorithm", logLevel);
 //   LogComponentEnable ("A3RsrpHandoverAlgorithm", logLevel);
 
-  uint16_t numberOfUes = 10;
+  uint16_t numberOfUes = 1;
   uint16_t numberOfEnbs = 2;
   uint16_t numberOfFixUes = 20;
   uint16_t numBearersPerUe = 1;
   double distance = 500.0; // m
-  double yForUe = 500.0;   // m
+//  double yForUe = 500.0;   // m
   double speed = 33.33;    // m/s
 //  double simTime = (double)(numberOfEnbs + 1) * distance / speed; // 1500 m / 20 m/s = 75 secs
-  double simTime = 15.0; // 180 secs.
+  double simTime = 75.0; // 180 secs.
   double enbTxPowerDbm = 46.0;
   double TTT = 256.0;
   double Hyst = 2.0;
   double throughput = 0.0;
   double numberOfPacketLoss = 0.0;
   double packetLossRate = 0.0;
+  
+//  double randomDirection; // for direction.
+//  srand (time(NULL));
+//  if (rand() % 2 == 0)
+//  {
+//      randomDirection = 0;
+//  }
+//  else
+//  {
+//      randomDirection = 4.71238;
+//  }
   
   // change some default attributes so that they are reasonable for
   // this scenario, but do this before processing command line
@@ -277,11 +300,30 @@ main (int argc, char *argv[])
   enbMobility.Install (enbNodes);
 
   MobilityHelper ueMobility; // Install Mobility Model in UE
-  ueMobility.SetMobilityModel ("ns3::ConstantVelocityMobilityModel");
-  ueMobility.Install (ueNodes);
-  ueNodes.Get (0)->GetObject<MobilityModel> ()->SetPosition (Vector (500, yForUe, 0));
-  ueNodes.Get (0)->GetObject<ConstantVelocityMobilityModel> ()->SetVelocity (Vector (speed, 0, 0));
+//  ueMobility.SetMobilityModel ("ns3::ConstantVelocityMobilityModel");
+//  ueMobility.Install (ueNodes);
+//  ueNodes.Get (0)->GetObject<MobilityModel> ()->SetPosition (Vector (500, yForUe, 0));
+//  ueNodes.Get (0)->GetObject<ConstantVelocityMobilityModel> ()->SetVelocity (Vector (speed, 0, 0));
   
+  
+  
+  ueMobility.SetPositionAllocator ("ns3::GridPositionAllocator",
+                                 "MinX", DoubleValue (750.0),
+                                 "MinY", DoubleValue (500.0),
+                                 "DeltaX", DoubleValue (0.0),
+                                 "DeltaY", DoubleValue (0.0),
+                                 "GridWidth", UintegerValue (3),
+                                 "LayoutType", StringValue ("RowFirst")); // set up the location of station nodes.
+
+  ueMobility.SetMobilityModel ("ns3::RandomWalk2dMobilityModel",
+                             "Bounds", RectangleValue (Rectangle (600, 900, 490, 510)),
+                             "Time", StringValue ("2s"),
+//                             "Direction", DoubleValue (randomDirection), // 2 direction.
+                             "Speed", StringValue ("ns3::ConstantRandomVariable[Constant=33.33]")); // set up the mobility model of station nodes.
+                             // Min=2.0|Max=4.0
+  ueMobility.Install (ueNodes);
+  
+
   Ptr<ListPositionAllocator> fixuePoistionAlloc = CreateObject<ListPositionAllocator> (); // Install the location of fixed UE.
   for (uint16_t i = 0;  i < numberOfFixUes/2; i++)
   {
@@ -428,10 +470,13 @@ main (int argc, char *argv[])
                    MakeCallback (&NotifyHandoverEndOkEnb));
   Config::Connect ("/NodeList/*/DeviceList/*/LteUeRrc/HandoverEndOk",
                    MakeCallback (&NotifyHandoverEndOkUe));
-
-//  Config::ConnectWithoutContext ("/NodeList/*/ApplicationList/*/$ns3::PacketSink/Rx", 
-//  				   MakeCallback(&SinkRxTrace));
   
+  Config::Connect ("/NodeList/*/$ns3::MobilityModel/CourseChange", 
+  				   MakeCallback (&CourseChange));
+  Config::ConnectWithoutContext ("/NodeList/*/ApplicationList/*/$ns3::PacketSink/Rx", 
+  				   MakeCallback(&SinkRxTrace));
+  
+
   FlowMonitorHelper flowmon;
   Ptr<FlowMonitor> monitor;
   monitor = flowmon.Install (ueNodes);
