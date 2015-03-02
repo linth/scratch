@@ -418,27 +418,7 @@ main (int argc, char *argv[])
       }
       // enbPositionAlloc->Add (enbPosition); // orgin
     }
-	
-  /*
-  for (uint16_t i = 0; i < numberOfEnbs; i++)
-  {
-    if (i == 0) // enb 0
-    {
-      Vector enbPosition (-250, 400, 0);
-      enbPositionAlloc->Add (enbPosition);
-    }
-    if (i%2 == 0) // enb 2, 4, 6
-    {
-      Vector enbPosition (yForUe * i + 500, 0, 0);
-      enbPositionAlloc->Add (enbPosition);
-    }
-    if (i%2 != 0) // enb 1, 3, 5
-    {
-      Vector enbPosition (-250 + yForUe * i, 800, 0);
-      enbPositionAlloc->Add (enbPosition);
-    }
-  }
-  */
+
   MobilityHelper enbMobility; // enb mobility helper.
   enbMobility.SetMobilityModel ("ns3::ConstantPositionMobilityModel");
   enbMobility.SetPositionAllocator (enbPositionAlloc);
@@ -486,13 +466,6 @@ main (int argc, char *argv[])
   for (uint32_t u = 0; u < ueNodes.GetN (); ++u)
     {
       Ptr<Node> ueNode = ueNodes.Get (u);
-      // linth ***********************************************
-      // Set the NetDevice for the UE.
-      // Ptr<NetDevice> ueLteDevice = ueLteDevs.Get(u);
-      // Ipv4InterfaceContainer ueIpIfaces;
-      // ueIpIfaces = epcHelper->AssignUeIpv4Address (NetDeviceContainer (ueLteDevice));
-      // linth ***********************************************
-      // Set the default gateway for the UE
       Ptr<Ipv4StaticRouting> ueStaticRouting = ipv4RoutingHelper.GetStaticRouting (ueNode->GetObject<Ipv4> ());
       ueStaticRouting->SetDefaultRoute (epcHelper->GetUeDefaultGatewayAddress (), 1);
     }
@@ -523,9 +496,6 @@ main (int argc, char *argv[])
   for (uint32_t u = 0; u < numberOfUes; ++u)
     {
       Ptr<Node> ue = ueNodes.Get (u);
-
-      // declare/calculate packet loss.
-
 
       // Set the default gateway for the UE
       Ptr<Ipv4StaticRouting> ueStaticRouting = ipv4RoutingHelper.GetStaticRouting (ue->GetObject<Ipv4> ());
@@ -592,8 +562,6 @@ main (int argc, char *argv[])
   // lteHelper->HandoverRequest (Seconds (0.100), ueLteDevs.Get (0), enbLteDevs.Get (2), enbLteDevs.Get (3));
   // std::cout << "enbLteDevs = " << enbLteDevs.Get(0) << std::endl;
 
-  
-
   // Uncomment to enable PCAP tracing
   // p2ph.EnablePcapAll("lena-x2-handover-measures");
 
@@ -605,10 +573,6 @@ main (int argc, char *argv[])
   rlcStats->SetAttribute ("EpochDuration", TimeValue (Seconds (1.0)));
   Ptr<RadioBearerStatsCalculator> pdcpStats = lteHelper->GetPdcpStats ();
   pdcpStats->SetAttribute ("EpochDuration", TimeValue (Seconds (1.0)));
-
-  // get information. (UE and eNB)
-  // You should use "lteHelper" to show/catch information you want.
-
 
   // connect custom trace sinks for RRC connection establishment and handover notification
   Config::Connect ("/NodeList/*/DeviceList/*/LteEnbRrc/ConnectionEstablished",
@@ -628,20 +592,14 @@ main (int argc, char *argv[])
   				   MakeCallback (&CourseChange));
   Config::ConnectWithoutContext ("/NodeList/*/ApplicationList/*/$ns3::PacketSink/Rx", 
   				   MakeCallback(&SinkRxTrace));
-
   // Config::Connect ("/NodeList/*/DeviceList/*/LteUeRrc/testPrint", MakeCallback (&testPrint));
 
-  // flow-monitor.
-  FlowMonitorHelper flowmon;
-  // FlowMonitorHelper flowmon_eNB;
+  FlowMonitorHelper flowmon; // flow-monitor.
   // Ptr<FlowMonitor> monitor = flowmon.InstallAll();
   Ptr<FlowMonitor> monitor = flowmon.Install(ueNodes); // UE flow monitor.
   flowmon.Install(remoteHost);
   flowmon.Install(ueNodes.Get(0));
   flowmon.Install(ueNodes.Get(1));
-  // Ptr<FlowMonitor> monitor_eNB = flowmon_eNB.Install(enbNodes); // eNB flow monitor.
-  // flowmon_eNB.Install(enbNodes.Get(2));
-
   flowmon.Install(enbNodes.Get(0));
   flowmon.Install(enbNodes.Get(1));
 
@@ -657,30 +615,16 @@ main (int argc, char *argv[])
 
   // calculate packet loss.
   monitor->CheckForLostPackets();
-  // monitor_eNB->CheckForLostPackets();
   
   // recode the experiment results.
   monitor->SerializeToXmlFile("2eNB1UEscenario.flowmon", true, true);
-  // monitor_eNB->SerializeToXmlFile("2eNB1UEscenario_eNB.flowmon", true, true);
 
-   /* UE flow. */
-  Ptr<Ipv4FlowClassifier> classifier = DynamicCast<Ipv4FlowClassifier> (flowmon.GetClassifier());
+  Ptr<Ipv4FlowClassifier> classifier = DynamicCast<Ipv4FlowClassifier> (flowmon.GetClassifier()); /* UE flow. */
   std::map<FlowId, FlowMonitor::FlowStats> stats = monitor->GetFlowStats ();
 
-  /* eNB flow. */
-  // Ptr<Ipv4FlowClassifier> classifier_enb = DynamicCast<Ipv4FlowClassifier> (flowmon_eNB.GetClassifier());
-  // std::map<FlowId, FlowMonitor::FlowStats> stats_enb = monitor_eNB->GetFlowStats ();  
-
-  // double Throughput = 0.0;
   double throughput = 0.0;
-  // double Packetloss = 0.0;
   double tempRx = 0;
   double tempTx = 0;
-  // double tmepHop = 0;
-  // double tempJitter = 0;
-  // double tempDelay = 0;
-  // int count = 0;
-  // double tempThrough = 0;
   double numberOfPacketLoss = 0.0;
   double packetLossRate = 0.0;
 
@@ -715,46 +659,18 @@ main (int argc, char *argv[])
   		packetLossRate = numberOfPacketLoss / i->second.txPackets;
   		NS_LOG_UNCOND (" Packet Loss ratio: " << packetLossRate << "(%)"); // Packet Loss Ratio.
   		NS_LOG_UNCOND ("******************************************************");
-      FILE *pFile;
-      pFile = fopen ("throughput.txt", "a");
-      if (pFile == NULL || pFile != NULL) {
-//        float avg = bytesTotal*8 / (lastRxTime - firstRxTime) / 1024;
-        fprintf(pFile, "Speed=%f; TTT=%f; Hyst=%f; Throughputs=%f (kbits/sec); PLR=%f; numberOfPacketLoss=%f \n", speed, TTT, Hyst, throughput, packetLossRate, numberOfPacketLoss);
-        fclose (pFile);
-      } 
-    }
+      
+                FILE *pFile;
+                pFile = fopen ("throughput.txt", "a");
+                if (pFile == NULL || pFile != NULL) 
+                {
+                    fprintf(pFile, "Speed=%f; TTT=%f; Hyst=%f; Throughputs=%f (kbits/sec); PLR=%f; numberOfPacketLoss=%f \n", speed, TTT, Hyst, throughput, packetLossRate, numberOfPacketLoss);
+                    fclose (pFile);
+                } 
+        }
   }   
 
-  // for (std::map<FlowId, FlowMonitor::FlowStats>::const_iterator i = stats_enb.begin(); i != stats_enb.end(); ++i)
-  // {
-  //   Ipv4FlowClassifier::FiveTuple t_enb = classifier_enb->FindFlow (i->first);
-  //   NS_LOG_UNCOND ("Flow " << i->first << " (" << t_enb.sourceAddress << " -> " << t_enb.destinationAddress << " )");
-  //   NS_LOG_UNCOND (" Tx Packets: " << i->second.txPackets);
-  //   NS_LOG_UNCOND (" Rx Packets: " << i->second.rxPackets);
-  //   Throughputs = ((i->second.rxBytes*8.0) / ((i->second.timeLastRxPacket.GetSeconds() - i->second.timeFirstTxPacket.GetSeconds())))/1024;
-  //   NS_LOG_UNCOND (" Throughputs: " << Throughputs << " kbps"); // Throuhgput.
-  //   numberOfPacketLoss = i->second.txPackets - i->second.rxPackets;
-  //   PacketlossRate = numberOfPacketLoss / i->second.txPackets;
-  //   NS_LOG_UNCOND (" Packet Loss ratio: " << PacketlossRate << "(%)"); // Packet Loss Ratio.
-  // }
-
-  std::cout << "Number client (average throughput) = " << bytesTotal*8/(lastRxTime - firstRxTime)/1024 << "kbits/sec" << std::endl;
-  std::cout << "Number of Handover: " << numberOfHandover << std::endl;
-  std::cout << "Number of Successful: " << numberOfSuccessHandover << std::endl;
-  std::cout << "Number of Connection Established UE: " << numberOfConnectionEstablishedUe << std::endl;
-  std::cout << "Number of Connection Established Enb: " << numberOfConnectionEstablishedEnb << std::endl;
-
   Simulator::Destroy ();
-
-  // std::cout << "Num UE + Num Enb = " << numberOfUes + numberOfEnbs << " "
-  //           << "Avg throughput = "   << std::setiosflags(std::ios::fixed) << std::setprecision(2)
-  //           << bytesTotal*8 / (lastRxTime - firstRxTime) / 1024
-  //           << "kbps" << std::endl;
-
-  // std::cout << "firstRxTime = " << firstRxTime << std::endl;
-  // std::cout << "lastRxTime = " << lastRxTime << std::endl;
-
-  // accessFile();
   return 0;
 
 }
