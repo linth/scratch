@@ -51,18 +51,6 @@ int numberOfSuccessHandover = 0;
 int numberOfConnectionEstablishedEnb = 0;
 int numberOfConnectionEstablishedUe = 0;
 
-/* Access the performance evalution. */
-// void accessFile ()
-// {
-//   FILE *pFile;
-//   pFile = fopen ("total_record.txt", "a");
-//   if (pFile != NULL || pFile == NULL)
-//   {
-//     float avg = bytesTotal*8 / (lastRxTime - firstRxTime) / 1024;
-//     fprintf(pFile, "%f\n", avg);
-//   }
-// }
-
 void
 NotifyConnectionEstablishedUe (std::string context,
                                uint64_t imsi,
@@ -252,18 +240,6 @@ void Mobility_RandomL2R (uint16_t numberOfUes_RandomL2R, ns3::NodeContainer ueNo
     ueNodes_randomL2R.Get(i)->GetObject<ConstantVelocityMobilityModel> ()->SetVelocity (Vector ((-1)^(i+1)*(rand()%50), 0, 0));
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 /** *************************************
    Main processing.
