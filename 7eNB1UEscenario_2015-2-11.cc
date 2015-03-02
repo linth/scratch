@@ -277,10 +277,10 @@ main (int argc, char *argv[])
   uint16_t numberOfEnbs = 7;
   uint16_t numBearersPerUe = 1;
   double distance = 1000.0; // m
-  double yForUe = 500.0;   // m
-  double speed = 50;       // m/s
-  double simTime = (double)(numberOfEnbs + 1) * distance / speed; // 1500 m / 20 m/s = 75 secs
-  // double simTime = 50; // 1500 m / 20 m/s = 75 secs
+//  double yForUe = 500.0;   // m
+  double speed = 33.33;       // m/s
+//  double simTime = (double)(numberOfEnbs + 1) * distance / speed; // 1500 m / 20 m/s = 75 secs
+  double simTime = 100; // 1500 m / 20 m/s = 75 secs
   double enbTxPowerDbm = 46.0; // 46.0
   double TTT = 256.0; // 0, 256, 5120; 40-60ms, 60-100ms, 100-160ms
   double Hyst = 2.0; 
@@ -447,7 +447,6 @@ main (int argc, char *argv[])
   /* Install Mobility Model in UE. */
   MobilityHelper ueMobility;
   ueMobility.SetMobilityModel ("ns3::ConstantVelocityMobilityModel");
-  // ueMobility.SetMobilityModel ("ns3::RandomDirection2dMobilityModel"); // Setup RandomDirection2dMobilityModel.
   ueMobility.Install (ueNodes);
   // for 1 UE node.
   // ueNodes.Get (0)->GetObject<MobilityModel> ()->SetPosition (Vector (0, yForUe, 0));
@@ -673,7 +672,7 @@ main (int argc, char *argv[])
   // std::map<FlowId, FlowMonitor::FlowStats> stats_enb = monitor_eNB->GetFlowStats ();  
 
   // double Throughput = 0.0;
-  double Throughputs = 0.0;
+  double throughput = 0.0;
   // double Packetloss = 0.0;
   double tempRx = 0;
   double tempTx = 0;
@@ -683,7 +682,7 @@ main (int argc, char *argv[])
   // int count = 0;
   // double tempThrough = 0;
   double numberOfPacketLoss = 0.0;
-  double PacketlossRate = 0.0;
+  double packetLossRate = 0.0;
 
   for (std::map<FlowId, FlowMonitor::FlowStats>::const_iterator i = stats.begin(); i != stats.end(); ++i)
   {
@@ -693,11 +692,11 @@ main (int argc, char *argv[])
   	NS_LOG_UNCOND ("Flow " << i->first << " (" << t.sourceAddress << " -> " << t.destinationAddress << " )");
   	NS_LOG_UNCOND (" Tx Packets: " << i->second.txPackets);
   	NS_LOG_UNCOND (" Rx Packets: " << i->second.rxPackets);
-  	Throughputs = ((i->second.rxBytes*8.0) / ((i->second.timeLastRxPacket.GetSeconds() - i->second.timeFirstTxPacket.GetSeconds())))/1024;
-  	NS_LOG_UNCOND (" Throughputs: " << Throughputs << " kbps"); // Throuhgput.
+  	throughput = ((i->second.rxBytes*8.0) / ((i->second.timeLastRxPacket.GetSeconds() - i->second.timeFirstTxPacket.GetSeconds())))/1024;
+  	NS_LOG_UNCOND (" Throughputs: " << throughput << " kbps"); // Throuhgput.
   	numberOfPacketLoss = i->second.txPackets - i->second.rxPackets;
-  	PacketlossRate = numberOfPacketLoss / i->second.txPackets;
-  	NS_LOG_UNCOND (" Packet Loss ratio: " << PacketlossRate << "(%)"); // Packet Loss Ratio.
+  	packetLossRate = numberOfPacketLoss / i->second.txPackets;
+  	NS_LOG_UNCOND (" Packet Loss ratio: " << packetLossRate << "(%)"); // Packet Loss Ratio.
 
 
   	if (t.destinationPort == dlPort)
@@ -708,22 +707,22 @@ main (int argc, char *argv[])
   		tempTx += i->second.txBytes;
   		NS_LOG_UNCOND (" Rx Packets: " << i->second.rxPackets);
   		tempRx += i->second.rxBytes;
-  		Throughputs = ((i->second.rxBytes*8.0) / ((i->second.timeLastRxPacket.GetSeconds() - i->second.timeFirstTxPacket.GetSeconds())))/1024;
+  		throughput = ((i->second.rxBytes*8.0) / ((i->second.timeLastRxPacket.GetSeconds() - i->second.timeFirstTxPacket.GetSeconds())))/1024;
   		// NS_LOG_UNCOND ( "timeLastRxPacket = " << i->second.timeLastRxPacket.GetSeconds());
   		// NS_LOG_UNCOND ( "timeFirstRxPacket = " << i->second.timeFirstRxPacket.GetSeconds());
-  		NS_LOG_UNCOND (" Throughputs: " << Throughputs << " kbps"); // Throuhgput.
+  		NS_LOG_UNCOND (" Throughputs: " << throughput << " kbps"); // Throuhgput.
   		numberOfPacketLoss = i->second.txPackets - i->second.rxPackets;
-  		PacketlossRate = numberOfPacketLoss / i->second.txPackets;
-  		NS_LOG_UNCOND (" Packet Loss ratio: " << PacketlossRate << "(%)"); // Packet Loss Ratio.
+  		packetLossRate = numberOfPacketLoss / i->second.txPackets;
+  		NS_LOG_UNCOND (" Packet Loss ratio: " << packetLossRate << "(%)"); // Packet Loss Ratio.
   		NS_LOG_UNCOND ("******************************************************");
       FILE *pFile;
       pFile = fopen ("throughput.txt", "a");
       if (pFile == NULL || pFile != NULL) {
-        float avg = bytesTotal*8 / (lastRxTime - firstRxTime) / 1024;
-        fprintf(pFile, "Speed=%f; TTT=%f; Hyst=%f; Throughputs=%f (kbits/sec); PLR=%f; numberOfPacketLoss=%f \n", speed, TTT, Hyst, avg, PacketlossRate, numberOfPacketLoss);
+//        float avg = bytesTotal*8 / (lastRxTime - firstRxTime) / 1024;
+        fprintf(pFile, "Speed=%f; TTT=%f; Hyst=%f; Throughputs=%f (kbits/sec); PLR=%f; numberOfPacketLoss=%f \n", speed, TTT, Hyst, throughput, packetLossRate, numberOfPacketLoss);
         fclose (pFile);
       } 
-  	}
+    }
   }   
 
   // for (std::map<FlowId, FlowMonitor::FlowStats>::const_iterator i = stats_enb.begin(); i != stats_enb.end(); ++i)
