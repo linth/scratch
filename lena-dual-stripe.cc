@@ -40,7 +40,11 @@
 
 using namespace ns3;
 
+<<<<<<< HEAD
 
+=======
+// please type the command of "NS_LOG=LenaDualStripe".
+>>>>>>> 5571a36ccdb8fc4228a14ad50a9f668dc01f8ed6
 NS_LOG_COMPONENT_DEFINE ("LenaDualStripe");
 
 
@@ -49,6 +53,10 @@ bool AreOverlapping (Box a, Box b)
   return !((a.xMin > b.xMax) || (b.xMin > a.xMax) || (a.yMin > b.yMax) || (b.yMin > a.yMax));
 }
 
+<<<<<<< HEAD
+=======
+// Femtocell class.
+>>>>>>> 5571a36ccdb8fc4228a14ad50a9f668dc01f8ed6
 class FemtocellBlockAllocator
 {
 public:
@@ -220,6 +228,7 @@ PrintGnuplottableEnbListToFile (std::string filename)
     }
 }
 
+<<<<<<< HEAD
 
 static ns3::GlobalValue g_nBlocks ("nBlocks",
                                    "Number of femtocell blocks",
@@ -229,6 +238,17 @@ static ns3::GlobalValue g_nApartmentsX ("nApartmentsX",
                                         "Number of apartments along the X axis in a femtocell block",
                                         ns3::UintegerValue (10),
                                         ns3::MakeUintegerChecker<uint32_t> ());
+=======
+// declare globalvalue. 
+static ns3::GlobalValue g_nBlocks ("nBlocks",
+                                   "Number of femtocell blocks",
+                                   ns3::UintegerValue (1),
+                                   ns3::MakeUintegerChecker<uint32_t> ()); // default = 1
+static ns3::GlobalValue g_nApartmentsX ("nApartmentsX",
+                                        "Number of apartments along the X axis in a femtocell block",
+                                        ns3::UintegerValue (10),
+                                        ns3::MakeUintegerChecker<uint32_t> ()); // default = 10
+>>>>>>> 5571a36ccdb8fc4228a14ad50a9f668dc01f8ed6
 static ns3::GlobalValue g_nFloors ("nFloors",
                                    "Number of floors",
                                    ns3::UintegerValue (1),
@@ -236,11 +256,19 @@ static ns3::GlobalValue g_nFloors ("nFloors",
 static ns3::GlobalValue g_nMacroEnbSites ("nMacroEnbSites",
                                           "How many macro sites there are",
                                           ns3::UintegerValue (3),
+<<<<<<< HEAD
                                           ns3::MakeUintegerChecker<uint32_t> ());
 static ns3::GlobalValue g_nMacroEnbSitesX ("nMacroEnbSitesX",
                                            "(minimum) number of sites along the X-axis of the hex grid",
                                            ns3::UintegerValue (1),
                                            ns3::MakeUintegerChecker<uint32_t> ());
+=======
+                                          ns3::MakeUintegerChecker<uint32_t> ()); // default = 3.
+static ns3::GlobalValue g_nMacroEnbSitesX ("nMacroEnbSitesX",
+                                           "(minimum) number of sites along the X-axis of the hex grid",
+                                           ns3::UintegerValue (1),
+                                           ns3::MakeUintegerChecker<uint32_t> ()); // default =1 
+>>>>>>> 5571a36ccdb8fc4228a14ad50a9f668dc01f8ed6
 static ns3::GlobalValue g_interSiteDistance ("interSiteDistance",
                                              "min distance between two nearby macro cell sites",
                                              ns3::DoubleValue (500),
@@ -253,6 +281,7 @@ static ns3::GlobalValue g_areaMarginFactor ("areaMarginFactor",
 static ns3::GlobalValue g_macroUeDensity ("macroUeDensity",
                                           "How many macrocell UEs there are per square meter",
                                           ns3::DoubleValue (0.00002),
+<<<<<<< HEAD
                                           ns3::MakeDoubleChecker<double> ());
 static ns3::GlobalValue g_homeEnbDeploymentRatio ("homeEnbDeploymentRatio",
                                                   "The HeNB deployment ratio as per 3GPP R4-092042",
@@ -278,6 +307,33 @@ static ns3::GlobalValue g_macroEnbDlEarfcn ("macroEnbDlEarfcn",
                                             "DL EARFCN used by macro eNBs",
                                             ns3::UintegerValue (100),
                                             ns3::MakeUintegerChecker<uint16_t> ());
+=======
+                                          ns3::MakeDoubleChecker<double> ()); // default = 0.00002
+static ns3::GlobalValue g_homeEnbDeploymentRatio ("homeEnbDeploymentRatio",
+                                                  "The HeNB deployment ratio as per 3GPP R4-092042",
+                                                  ns3::DoubleValue (0.2),
+                                                  ns3::MakeDoubleChecker<double> ()); // default = 0.2
+static ns3::GlobalValue g_homeEnbActivationRatio ("homeEnbActivationRatio",
+                                                  "The HeNB activation ratio as per 3GPP R4-092042",
+                                                  ns3::DoubleValue (0.5),
+                                                  ns3::MakeDoubleChecker<double> ()); // default = 0.5
+static ns3::GlobalValue g_homeUesHomeEnbRatio ("homeUesHomeEnbRatio",
+                                               "How many (on average) home UEs per HeNB there are in the simulation",
+                                               ns3::DoubleValue (40.0),
+                                               ns3::MakeDoubleChecker<double> ()); // default = 1.
+static ns3::GlobalValue g_macroEnbTxPowerDbm ("macroEnbTxPowerDbm",
+                                              "TX power [dBm] used by macro eNBs",
+                                              ns3::DoubleValue (46.0),
+                                              ns3::MakeDoubleChecker<double> ()); // default = 46.0
+static ns3::GlobalValue g_homeEnbTxPowerDbm ("homeEnbTxPowerDbm",
+                                             "TX power [dBm] used by HeNBs",
+                                             ns3::DoubleValue (20.0),
+                                             ns3::MakeDoubleChecker<double> ()); // default = 20
+static ns3::GlobalValue g_macroEnbDlEarfcn ("macroEnbDlEarfcn",
+                                            "DL EARFCN used by macro eNBs",
+                                            ns3::UintegerValue (100),
+                                            ns3::MakeUintegerChecker<uint16_t> ()); 
+>>>>>>> 5571a36ccdb8fc4228a14ad50a9f668dc01f8ed6
 static ns3::GlobalValue g_homeEnbDlEarfcn ("homeEnbDlEarfcn",
                                            "DL EARFCN used by HeNBs",
                                            ns3::UintegerValue (100),
@@ -292,8 +348,13 @@ static ns3::GlobalValue g_homeEnbBandwidth ("homeEnbBandwidth",
                                             ns3::MakeUintegerChecker<uint16_t> ());
 static ns3::GlobalValue g_simTime ("simTime",
                                    "Total duration of the simulation [s]",
+<<<<<<< HEAD
                                    ns3::DoubleValue (0.25),
                                    ns3::MakeDoubleChecker<double> ());
+=======
+                                   ns3::DoubleValue (5),
+                                   ns3::MakeDoubleChecker<double> ()); // default = 0.25
+>>>>>>> 5571a36ccdb8fc4228a14ad50a9f668dc01f8ed6
 static ns3::GlobalValue g_generateRem ("generateRem",
                                        "if true, will generate a REM and then abort the simulation;"
                                        "if false, will run the simulation normally (without generating any REM)",
@@ -332,11 +393,16 @@ static ns3::GlobalValue g_fadingTrace ("fadingTrace",
 static ns3::GlobalValue g_numBearersPerUe ("numBearersPerUe",
                                            "How many bearers per UE there are in the simulation",
                                            ns3::UintegerValue (1),
+<<<<<<< HEAD
                                            ns3::MakeUintegerChecker<uint16_t> ());
+=======
+                                           ns3::MakeUintegerChecker<uint16_t> ()); // default = 1
+>>>>>>> 5571a36ccdb8fc4228a14ad50a9f668dc01f8ed6
 static ns3::GlobalValue g_srsPeriodicity ("srsPeriodicity",
                                           "SRS Periodicity (has to be at least "
                                           "greater than the number of UEs per eNB)",
                                           ns3::UintegerValue (80),
+<<<<<<< HEAD
                                           ns3::MakeUintegerChecker<uint16_t> ());
 static ns3::GlobalValue g_outdoorUeMinSpeed ("outdoorUeMinSpeed",
                                              "Minimum speed value of macor UE with random waypoint model [m/s].",
@@ -346,6 +412,94 @@ static ns3::GlobalValue g_outdoorUeMaxSpeed ("outdoorUeMaxSpeed",
                                              "Maximum speed value of macor UE with random waypoint model [m/s].",
                                              ns3::DoubleValue (0.0),
                                              ns3::MakeDoubleChecker<double> ());
+=======
+                                          ns3::MakeUintegerChecker<uint16_t> ()); // Sounding reerence signal.
+static ns3::GlobalValue g_outdoorUeMinSpeed ("outdoorUeMinSpeed",
+                                             "Minimum speed value of macor UE with random waypoint model [m/s].",
+                                             ns3::DoubleValue (0.0),
+                                             ns3::MakeDoubleChecker<double> ());  // default = 0
+static ns3::GlobalValue g_outdoorUeMaxSpeed ("outdoorUeMaxSpeed",
+                                             "Maximum speed value of macor UE with random waypoint model [m/s].",
+                                             ns3::DoubleValue (0.0),
+                                             ns3::MakeDoubleChecker<double> ());  // default = 0
+
+
+void
+NotifyHandoverStartUe (std::string context,
+                       uint64_t imsi,
+                       uint16_t cellId,
+                       uint16_t rnti,
+                       uint16_t targetCellId)
+{
+  std::cout << Simulator::Now ().GetSeconds () << " " << context
+            << " UE IMSI " << imsi
+            << ": previously connected to CellId " << cellId
+            << " with RNTI " << rnti
+            << ", doing handover to CellId " << targetCellId
+            << std::endl;
+}
+
+void
+NotifyHandoverEndOkUe (std::string context,
+                       uint64_t imsi,
+                       uint16_t cellId,
+                       uint16_t rnti)
+{
+  std::cout << Simulator::Now ().GetSeconds () << " " << context
+            << " UE IMSI " << imsi
+            << ": successful handover to CellId " << cellId
+            << " with RNTI " << rnti
+            << std::endl;
+}
+
+void
+NotifyHandoverStartEnb (std::string context,
+                        uint64_t imsi,
+                        uint16_t cellId,
+                        uint16_t rnti,
+                        uint16_t targetCellId)
+{
+  std::cout << Simulator::Now ().GetSeconds () << " " << context
+            << " eNB CellId " << cellId
+            << ": start handover of UE with IMSI " << imsi
+            << " RNTI " << rnti
+            << " to CellId " << targetCellId
+            << std::endl;
+}
+
+void
+NotifyHandoverEndOkEnb (std::string context,
+                        uint64_t imsi,
+                        uint16_t cellId,
+                        uint16_t rnti)
+{
+  std::cout << Simulator::Now ().GetSeconds () << " " << context
+            << " eNB CellId " << cellId
+            << ": completed handover of UE with IMSI " << imsi
+            << " RNTI " << rnti
+            << std::endl;
+}
+
+// show information, i.e., position and speed.
+// void showPosition (Ptr<Node> node, double deltaTime) {
+//   uint32_t nodeId = node->GetId ();
+//   Ptr<MobilityModel> mobModel = node->GetObject<MobilityModel> ();
+//   Vector3D pos = mobModel->GetPosition ();
+//   Vector3D speed = mobModel->GetVelocity ();
+//   std::cout << "At " << Simulator::Now().GetSeconds() << " node " << nodeId
+//                      << ": Position(" << pos.x << ", " << pos.y << ", " << pos.z
+//                       << ");    Speed("  << speed.x << ", " << speed.y << ", " << speed.z
+//                       << ")" << std::endl;
+//   Simulator::Schedule (Seconds (deltaTime), &showPosition, node, deltaTime);
+// }
+
+// static Vector 
+// GetPosition (Ptr<Node> node) {
+//   Ptr<MobilityModel> mobility = node->GetObject<MobilityModel> ();
+//   return mobility->GetPosition();
+// }
+
+>>>>>>> 5571a36ccdb8fc4228a14ad50a9f668dc01f8ed6
 
 int
 main (int argc, char *argv[])
@@ -357,12 +511,38 @@ main (int argc, char *argv[])
   Config::SetDefault ("ns3::UdpClient::MaxPackets", UintegerValue (1000000));
   Config::SetDefault ("ns3::LteRlcUm::MaxTxBufferSize", UintegerValue (10 * 1024));
 
+<<<<<<< HEAD
   CommandLine cmd;
+=======
+  // Handover.
+  Config::Connect ("/NodeList/*/DeviceList/*/LteEnbRrc/HandoverStart",
+                 MakeCallback (&NotifyHandoverStartEnb)); //macroEnbs, nMacroEnbSites, LteEnbRrc
+  Config::Connect ("/NodeList/*/DeviceList/*/LteEnbRrc/HandoverStart",
+                 MakeCallback (&NotifyHandoverStartUe));
+  Config::Connect ("/NodeList/*/DeviceList/*/LteEnbRrc/HandoverEndOk",
+                 MakeCallback (&NotifyHandoverEndOkEnb));
+  Config::Connect ("/NodeList/*/DeviceList/*/LteEnbRrc/HandoverEndOk",
+                 MakeCallback (&NotifyHandoverEndOkUe));
+
+  // double TTT = 256.0; // 0, 256, 5120; 40-60ms, 60-100ms, 100-160ms
+
+  CommandLine cmd;
+  // cmd.AddValue("TTT", "Time-to-Trigger (default = 256)", TTT);
+
+
+>>>>>>> 5571a36ccdb8fc4228a14ad50a9f668dc01f8ed6
   cmd.Parse (argc, argv);
   ConfigStore inputConfig;
   inputConfig.ConfigureDefaults ();
   // parse again so you can override input file default values via command line
   cmd.Parse (argc, argv); 
+<<<<<<< HEAD
+=======
+  
+
+  // show time. 
+  // double deltaTime = 1.0; // it should be the same with simTime value. 
+>>>>>>> 5571a36ccdb8fc4228a14ad50a9f668dc01f8ed6
 
   // the scenario parameters get their values from the global attributes defined above
   UintegerValue uintegerValue;
@@ -428,7 +608,11 @@ main (int argc, char *argv[])
 
   Config::SetDefault ("ns3::LteEnbRrc::SrsPeriodicity", UintegerValue (srsPeriodicity));
 
+<<<<<<< HEAD
   Box macroUeBox;
+=======
+  Box macroUeBox; 
+>>>>>>> 5571a36ccdb8fc4228a14ad50a9f668dc01f8ed6
   double ueZ = 1.5;
   if (nMacroEnbSites > 0)
     {
@@ -486,9 +670,44 @@ main (int argc, char *argv[])
   lteHelper->SetPathlossModelAttribute ("ShadowSigmaOutdoor", DoubleValue (1));
   lteHelper->SetPathlossModelAttribute ("ShadowSigmaIndoor", DoubleValue (1.5));
   // use always LOS model
+<<<<<<< HEAD
   lteHelper->SetPathlossModelAttribute ("Los2NlosThr", DoubleValue (1e6));
   lteHelper->SetSpectrumChannelType ("ns3::MultiModelSpectrumChannel");
 
+=======
+  // a2a4rsrq
+  lteHelper->SetPathlossModelAttribute ("Los2NlosThr", DoubleValue (1e6));
+  lteHelper->SetSpectrumChannelType ("ns3::MultiModelSpectrumChannel");
+
+  //  Automatic handover trigger. 
+  // NS_LOG_LOGIC ("setting handover algorithm: A2A4RsrqHandoverAlgorithm");
+  // lteHelper->SetHandoverAlgorithmType ("ns3::A2A4RsrqHandoverAlgorithm");
+  // lteHelper->SetHandoverAlgorithmAttribute ("ServingCellThreshold",
+  //                                         UintegerValue (30));
+  // lteHelper->SetHandoverAlgorithmAttribute ("NeighbourCellOffset",
+  //                                         UintegerValue (1));
+  // a3rsrp
+  // NS_LOG_LOGIC ("setting handover algorithm: A3RsrpHandoverAlgorithm");
+  // lteHelper->SetHandoverAlgorithmType ("ns3::A3RsrpHandoverAlgorithm");
+  // lteHelper->SetHandoverAlgorithmAttribute ("Hysteresis",
+  //                                         DoubleValue (3.0));
+  // lteHelper->SetHandoverAlgorithmAttribute ("TimeToTrigger",
+  //                                         TimeValue (MilliSeconds (256)));
+  // no op handover.
+  // NS_LOG_LOGIC ("setting handover algorithm: NoOpHandoverAlgorithm");
+  // lteHelper->SetHandoverAlgorithmType ("ns3::NoOpHandoverAlgorithm");
+
+  // Distributed Fractional Frequency Reuse Algorithm.
+  /*
+  lteHelper->SetFfrAlgorithmType("ns3::LteFfrDistributedAlgorithm");
+  lteHelper->SetFfrAlgorithmAttribute("CalculationInterval", TimeValue(MilliSeconds(500)));
+  lteHelper->SetFfrAlgorithmAttribute("RsrqThreshold", UintegerValue(25));
+  lteHelper->SetFfrAlgorithmAttribute("RsrpDifferenceThreshold", UintegerValue(5));
+  lteHelper->SetFfrAlgorithmAttribute("EdgeRbNum", UintegerValue(6));
+  lteHelper->SetFfrAlgorithmAttribute("CenterPowerOffset", UintegerValue(LteRrcSap::PdschConfigDedicated::dB0));
+  lteHelper->SetFfrAlgorithmAttribute("EdgePowerOffset", UintegerValue(LteRrcSap::PdschConfigDedicated::dB3);
+  */
+>>>>>>> 5571a36ccdb8fc4228a14ad50a9f668dc01f8ed6
 //   lteHelper->EnableLogComponents ();
 //   LogComponentEnable ("PfFfMacScheduler", LOG_LEVEL_ALL);
 
@@ -529,6 +748,11 @@ main (int argc, char *argv[])
     {
       // this enables handover for macro eNBs
       lteHelper->AddX2Interface (macroEnbs);
+<<<<<<< HEAD
+=======
+      // new be added.
+      // lteHelper->AddX2Interface(homeEnbs); // ???
+>>>>>>> 5571a36ccdb8fc4228a14ad50a9f668dc01f8ed6
     }
   
   // HomeEnbs randomly indoor
@@ -553,9 +777,18 @@ main (int argc, char *argv[])
   mobility.Install (homeUes);
   BuildingsHelper::Install (homeUes);
   // set the home UE as a CSG member of the home eNodeBs
+<<<<<<< HEAD
   lteHelper->SetUeDeviceAttribute ("CsgId", UintegerValue (1));
   NetDeviceContainer homeUeDevs = lteHelper->InstallUeDevice (homeUes);
 
+=======
+  // lteHelper->SetUeDeviceAttribute ("CsgId", UintegerValue (1));
+  NetDeviceContainer homeUeDevs = lteHelper->InstallUeDevice (homeUes);
+
+  // Simulator::Schedule (Seconds(simTime), & GetPosition, macroUes.Get(10));
+  // Simulator::Schedule (Seconds(simTime), & GetPosition, macroUes.Get(3));
+
+>>>>>>> 5571a36ccdb8fc4228a14ad50a9f668dc01f8ed6
   // macro Ues
   NS_LOG_LOGIC ("randomly allocating macro UEs in " << macroUeBox << " speedMin " << outdoorUeMinSpeed << " speedMax " << outdoorUeMaxSpeed);
   if (outdoorUeMaxSpeed!=0.0)
@@ -840,11 +1073,20 @@ main (int argc, char *argv[])
       Simulator::Stop (Seconds (simTime));
     }
 
+<<<<<<< HEAD
   lteHelper->EnableMacTraces ();
   lteHelper->EnableRlcTraces ();
   if (epc)
     {
       lteHelper->EnablePdcpTraces ();
+=======
+  // You can get more information if you want. But the simulation would be lower.
+  // lteHelper->EnableMacTraces (); 
+  lteHelper->EnableRlcTraces ();
+  if (epc)
+    {
+      // lteHelper->EnablePdcpTraces ();
+>>>>>>> 5571a36ccdb8fc4228a14ad50a9f668dc01f8ed6
     }
 
   Simulator::Run ();
