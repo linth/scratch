@@ -1,6 +1,7 @@
 /* -*-  Mode: C++; c-file-style: "gnu"; indent-tabs-mode:nil; -*- */
 /*
- * Copyright (c) 2013 Centre Tecnologic de Telecomunicacions de Catalunya (CTTC) *
+ * Copyright (c) 2013 Centre Tecnologic de Telecomunicacions de Catalunya (CTTC)
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation;
@@ -26,8 +27,6 @@
 #include "ns3/point-to-point-module.h"
 #include "ns3/config-store-module.h"
 
-using namespace ns3;
-
 /* add HeNB code. */
  #include <ns3/buildings-module.h>
  #include <ns3/point-to-point-helper.h>
@@ -36,6 +35,7 @@ using namespace ns3;
  #include <ios>
  #include <string>
  #include <vector>
+
  /* include flowmonitor. */
  #include "ns3/lte-helper.h"
  #include "ns3/epc-helper.h"
@@ -52,6 +52,8 @@ int EstablishedUe_time = 0;
 int HandoverStartUe_time = 0;
 int HandoverEndOkUe_time = 0;
 int handoverTimeSum = 0;
+
+using namespace ns3;
 
 NS_LOG_COMPONENT_DEFINE ("LTE-NeNB-coexistence");
 
@@ -314,6 +316,8 @@ PrintGnuplottableEnbListToFile (std::string filename)
         }
     }
 }
+
+
 
 /**
  * Sample simulation script for an automatic X2-based handover based on the RSRQ measures.
@@ -668,12 +672,13 @@ main (int argc, char *argv[])
 
   double throughput, av_throughput = 0.0;
   double numberOfPacketLoss = 0.0;
-  double packetLossRate, minPacketLossRate, maxPacketLossRate, av_TotalPacketLossRate = 0.0;
+  double packetLossRate, minPacketLossRate, maxPacketLossRate = 0; 
+  // double av_TotalPacketLossRate = 0.0;
   double totalReceivedPacket, totalSendPacket = 0.0;
   double total_throughput = 0.0;
   double delay_down = 0.0;
   double delay_up = 0.0;
-  double avgHandovers = 0.0;
+  // double avgHandovers = 0.0;
 
   for (std::map<FlowId, FlowMonitor::FlowStats>::const_iterator i = stats.begin(); i != stats.end(); ++i) 
     {
@@ -721,7 +726,7 @@ main (int argc, char *argv[])
         // average packet loss ratio.
         totalReceivedPacket += i->second.rxPackets;
         totalSendPacket += i->second.txPackets;
-        av_TotalPacketLossRate = 100 * ((totalSendPacket - totalReceivedPacket) / totalSendPacket);
+        // av_TotalPacketLossRate = 100 * ((totalSendPacket - totalReceivedPacket) / totalSendPacket);
         // std::cout << "totalReceivedPacket = " << totalReceivedPacket << "; totalSendPacket = " << totalSendPacket << std::endl;
         // std::cout << "av_TotalPacketLossRate = " << av_TotalPacketLossRate << std::endl;
         // number of packet loss. (Total)
@@ -741,19 +746,29 @@ main (int argc, char *argv[])
             // std::cout << "throughput = " << throughput << std::endl;
         }
         // average delay.
-        if (i->second.rxPackets > 0)
+        if (i->second.rxPackets != 0)
         {
             delay_down = i->second.delaySum.GetSeconds() / i->second.rxPackets;
             // std::cout << "Delay Down = " << i->second.delaySum.GetSeconds() / i->second.rxPackets << "\n";
         }   
-        if (i->second.rxPackets > 0)
+        if (i->second.rxPackets != 0)
         {
             delay_up = i->second.delaySum.GetSeconds() / i->second.rxPackets;
             // std::cout << "Delay Up = " << i->second.delaySum.GetSeconds() / i->second.rxPackets << "\n";
         }
         // average handover time. 
-        avgHandovers = numberOfSuccessHandover / simTime;
+        // avgHandovers = numberOfSuccessHandover / simTime;
         // handover failure ratio.
+    }
+
+    // recod all of the performance evaluation.
+    FILE *pFile;
+    pFile = fopen("throughput.txt", "a");
+    if (pFile == NULL || pFile != NULL) {
+        // avgHandovers
+        fprintf(pFile, "Speed=%f; TTT=%f; Hyst=%f; av_Throughputs=%f (kbits/sec); (minPLR = %f, maxPLR = %f); numberOfPacketLoss=%f ; Delay Down=%f; Delay Up=%f; (numberOfSuccessHandover=%d)\n", speed, TTT, Hyst, av_throughput, minPacketLossRate, maxPacketLossRate, numberOfPacketLoss, delay_down, delay_up, numberOfSuccessHandover); 
+        // fprintf(pFile, "Speed=%f; TTT=%f; Hyst=%f; av_Throughputs=%f (throughput = %f  kbits/sec); av_PLR=%f (minPLR = %f, maxPLR = %f); numberOfPacketLoss=%f (numberOfSuccessHandover=%f)\n", speed, TTT, Hyst, av_throughput, throughput, av_TotalPacketLossRate, minPacketLossRate, maxPacketLossRate, numberOfPacketLoss, numberOfSuccessHandover);
+        fclose(pFile);
     }
 
   // GtkConfigStore config;
@@ -763,3 +778,7 @@ main (int argc, char *argv[])
   return 0;
 
 }
+
+
+
+
