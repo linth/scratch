@@ -488,7 +488,7 @@ main(int argc, char *argv[]) {
             serverApps.Add(dlPacketSinkHelper.Install(ue));
 
             // 	NS_LOG_LOGIC ("Part 2: installing UDP DL app for UE " << u);
-            //             UdpClientHelper dlClientHelper (ueIpIfaces.GetAddress (u), dlPort);;
+            //             UdpClientHelper dlClientHelper (ueIpIfaces.GetAddress (u), dlPort);
             //             dlClientHelper.SetAttribute ("Interval", TimeValue(MilliSeconds(0.8)));
             //             dlClientHelper.SetAttribute ("MaxPackets", UintegerValue(100000));
             //             dlClientHelper.SetAttribute ("PacketSize", UintegerValue(1500));
