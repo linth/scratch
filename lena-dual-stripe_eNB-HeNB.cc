@@ -49,7 +49,6 @@ bool AreOverlapping (Box a, Box b)
   return !((a.xMin > b.xMax) || (b.xMin > a.xMax) || (a.yMin > b.yMax) || (b.yMin > a.yMax));
 }
 
-
 // Femtocell class.
 class FemtocellBlockAllocator
 {
@@ -221,14 +220,7 @@ PrintGnuplottableEnbListToFile (std::string filename)
         }
     }
 }
-static ns3::GlobalValue g_nBlocks ("nBlocks",
-                                   "Number of femtocell blocks",
-                                   ns3::UintegerValue (1),
-                                   ns3::MakeUintegerChecker<uint32_t> ());
-static ns3::GlobalValue g_nApartmentsX ("nApartmentsX",
-                                        "Number of apartments along the X axis in a femtocell block",
-                                        ns3::UintegerValue (10),
-                                        ns3::MakeUintegerChecker<uint32_t> ());
+
 // declare globalvalue. 
 static ns3::GlobalValue g_nBlocks ("nBlocks",
                                    "Number of femtocell blocks",
@@ -245,11 +237,6 @@ static ns3::GlobalValue g_nFloors ("nFloors",
 static ns3::GlobalValue g_nMacroEnbSites ("nMacroEnbSites",
                                           "How many macro sites there are",
                                           ns3::UintegerValue (3),
-                                          ns3::MakeUintegerChecker<uint32_t> ());
-static ns3::GlobalValue g_nMacroEnbSitesX ("nMacroEnbSitesX",
-                                           "(minimum) number of sites along the X-axis of the hex grid",
-                                           ns3::UintegerValue (1),
-                                           ns3::MakeUintegerChecker<uint32_t> ());
                                           ns3::MakeUintegerChecker<uint32_t> ()); // default = 3.
 static ns3::GlobalValue g_nMacroEnbSitesX ("nMacroEnbSitesX",
                                            "(minimum) number of sites along the X-axis of the hex grid",
@@ -268,30 +255,6 @@ static ns3::GlobalValue g_macroUeDensity ("macroUeDensity",
                                           "How many macrocell UEs there are per square meter",
                                           ns3::DoubleValue (0.00002),
                                           ns3::MakeDoubleChecker<double> ()); // default = 0.00002
-static ns3::GlobalValue g_homeEnbDeploymentRatio ("homeEnbDeploymentRatio",
-                                                  "The HeNB deployment ratio as per 3GPP R4-092042",
-                                                  ns3::DoubleValue (0.2),
-                                                  ns3::MakeDoubleChecker<double> ());
-static ns3::GlobalValue g_homeEnbActivationRatio ("homeEnbActivationRatio",
-                                                  "The HeNB activation ratio as per 3GPP R4-092042",
-                                                  ns3::DoubleValue (0.5),
-                                                  ns3::MakeDoubleChecker<double> ());
-static ns3::GlobalValue g_homeUesHomeEnbRatio ("homeUesHomeEnbRatio",
-                                               "How many (on average) home UEs per HeNB there are in the simulation",
-                                               ns3::DoubleValue (1.0),
-                                               ns3::MakeDoubleChecker<double> ());
-static ns3::GlobalValue g_macroEnbTxPowerDbm ("macroEnbTxPowerDbm",
-                                              "TX power [dBm] used by macro eNBs",
-                                              ns3::DoubleValue (46.0),
-                                              ns3::MakeDoubleChecker<double> ());
-static ns3::GlobalValue g_homeEnbTxPowerDbm ("homeEnbTxPowerDbm",
-                                             "TX power [dBm] used by HeNBs",
-                                             ns3::DoubleValue (20.0),
-                                             ns3::MakeDoubleChecker<double> ());
-static ns3::GlobalValue g_macroEnbDlEarfcn ("macroEnbDlEarfcn",
-                                            "DL EARFCN used by macro eNBs",
-                                            ns3::UintegerValue (100),
-                                            ns3::MakeUintegerChecker<uint16_t> ());
 static ns3::GlobalValue g_homeEnbDeploymentRatio ("homeEnbDeploymentRatio",
                                                   "The HeNB deployment ratio as per 3GPP R4-092042",
                                                   ns3::DoubleValue (0.2),
@@ -490,9 +453,6 @@ main (int argc, char *argv[])
   inputConfig.ConfigureDefaults ();
   // parse again so you can override input file default values via command line
   cmd.Parse (argc, argv); 
- 
-  // show time. 
-  // double deltaTime = 1.0; // it should be the same with simTime value. 
 
   // the scenario parameters get their values from the global attributes defined above
   UintegerValue uintegerValue;
@@ -688,7 +648,6 @@ main (int argc, char *argv[])
     {
       // this enables handover for macro eNBs
       lteHelper->AddX2Interface (macroEnbs);
-
       // new be added.
       // lteHelper->AddX2Interface(homeEnbs); // ???
     }
